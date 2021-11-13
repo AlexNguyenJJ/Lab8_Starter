@@ -75,6 +75,20 @@ describe('Basic user flow for Website', () => {
     // Query select all of the <product-item> elements, then for every single product element
     // get the shadowRoot and query select the button inside, and click on it.
     // Check to see if the innerText of #cart-count is 20
+
+    let prodItems = await page.$$("product-item");
+    const numProdItems = prodItems.length;
+    for (let i = 1; i < numProdItems; i++) {
+      let prodItemShadowRoot = await prodItems[i].getProperty("shadowRoot");
+      let button = await prodItemShadowRoot.$("button");
+      await button.click();
+    }
+    let cartCount = await page.$("#cart-count");
+    let cartCountInnerText = await cartCount.getProperty("innerText");
+    let cartCountTxtVal = await cartCountInnerText['_remoteObject'].value;
+    expect(cartCountTxtVal).toBe("20");
+
+
   }, 10000);
 
   // Check to make sure that after you reload the page it remembers all of the items in your cart
